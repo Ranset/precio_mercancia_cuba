@@ -1,0 +1,1219 @@
+/* ==========================================================================
+   Precio Cuba — "Midnight Capital" design system
+   Tema oscuro dedicado (sin variante clara): fintech de precisión, calmado,
+   con acentos de un solo color de acción. Basado en DESIGN.md.
+   ========================================================================== */
+
+/* ---------------------------------------------------------------------- */
+/* Tokens                                                                  */
+/* ---------------------------------------------------------------------- */
+:root {
+  color-scheme: dark;
+
+  /* Superficies (capas tonales, de más profunda a más elevada) */
+  --color-bg: #101415;
+  --color-surface-lowest: #0b0f10;
+  --color-surface-low: #191c1e;
+  --color-surface: #1d2022;
+  --color-surface-high: #272a2c;
+  --color-surface-highest: #323537;
+  --color-surface-bright: #363a3b;
+
+  /* Texto */
+  --color-text: #e0e3e5;
+  --color-text-muted: #c5c6cd;
+
+  /* Bordes */
+  --color-border: #44474d;
+  --color-border-strong: #8f9097;
+
+  /* Acento — color de acción/éxito (botones primarios, ganancias, foco) */
+  --color-accent: #4edea3;
+  --color-accent-strong: #6ffbbe;
+  --color-on-accent: #003824;
+  --color-accent-container: #00a572;
+  --color-accent-soft: rgba(78, 222, 163, 0.14);
+
+  /* Azul medianoche — acento de marca "de firma", para momentos destacados.
+     Este bloque NUNCA se redefine para el tema claro (ver más abajo): estas
+     tarjetas se quedan siempre oscuras, así que su texto también debe ser
+     fijo — si usara --color-text/--color-text-muted (que sí cambian con el
+     tema), en tema claro saldría texto casi negro sobre fondo casi negro. */
+  --color-navy: #0a192f;
+  --color-navy-strong: #081a2d;
+  --color-on-navy: #74829d; /* etiquetas normales sobre navy */
+  --color-on-navy-emphasis: #c5c6cd; /* etiquetas destacadas sobre navy (ej. "Ganancia") */
+  --color-on-navy-value: #e0e3e5; /* montos en $ sobre navy */
+  --color-on-navy-danger: #ffb4ab; /* pérdidas sobre navy */
+
+  /* Periwinkle — texto de enlace / acentos terciarios discretos */
+  --color-link: #b9c7e4;
+
+  /* Peligro / pérdidas */
+  --color-danger: #ffb4ab;
+  --color-danger-strong: #ffdad6;
+  --color-on-danger: #690005;
+  --color-danger-container: #93000a;
+  --color-danger-soft: rgba(255, 180, 171, 0.14);
+
+  /* Tipografía */
+  --font-ui: 'Inter', system-ui, -apple-system, Roboto, Helvetica, Arial, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
+
+  /* Radios — formas "profesionales suaves": nunca 0, nunca pill en botones */
+  --radius-xs: 6px;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-full: 9999px;
+
+  /* Elevación */
+  --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow-modal: 0 8px 24px rgba(0, 0, 0, 0.5);
+
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --bottom-nav-height: 64px;
+}
+
+/* ---------------------------------------------------------------------- */
+/* Tema claro                                                              */
+/* ---------------------------------------------------------------------- */
+/* Elegido a mano en Configuración (no sigue el tema del sistema) y aplicado
+   como atributo en <html>; por defecto (sin el atributo) se queda oscuro, así
+   que nadie que no haya tocado el selector nota ningún cambio.
+
+   --color-navy / --color-navy-strong / --color-on-navy / --color-on-navy-emphasis /
+   --color-on-navy-value / --color-on-navy-danger / --color-accent-strong se dejan
+   SIN redefinir a propósito: las tarjetas destacadas (el resultado de la
+   Calculadora, el resumen del viaje) se quedan siempre en azul medianoche,
+   como una "firma" de marca constante en los dos temas — no se aclaran.
+
+   Contraste verificado contra WCAG 2.1 (texto normal ≥ 4.5:1, bordes de
+   componentes interactivos ≥ 3:1) antes de fijar estos valores. */
+:root[data-theme='light'] {
+  color-scheme: light;
+
+  --color-bg: #eef1f4;
+  --color-surface-lowest: #e2e6ea;
+  --color-surface-low: #e7eaed;
+  --color-surface: #ffffff;
+  --color-surface-high: #f3f5f7;
+  --color-surface-highest: #ffffff;
+  --color-surface-bright: #ffffff;
+
+  --color-text: #14181d;
+  --color-text-muted: #4b5563;
+
+  --color-border: #cbd2da;
+  --color-border-strong: #7c8794;
+
+  --color-accent: #047857;
+  --color-on-accent: #ffffff;
+  --color-accent-container: #d6f3e6;
+  --color-accent-soft: rgba(4, 120, 87, 0.12);
+
+  --color-link: #1d4ed8;
+
+  --color-danger: #c0271e;
+  --color-danger-strong: #f8d4d1;
+  --color-on-danger: #ffffff;
+  --color-danger-container: #f3c9c5;
+  --color-danger-soft: rgba(192, 39, 30, 0.1);
+
+  --shadow-card: 0 1px 2px rgba(20, 24, 29, 0.06), 0 1px 3px rgba(20, 24, 29, 0.04);
+  --shadow-modal: 0 8px 24px rgba(20, 24, 29, 0.16);
+}
+
+/* ---------------------------------------------------------------------- */
+/* Reset y base                                                            */
+/* ---------------------------------------------------------------------- */
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-ui);
+  -webkit-tap-highlight-color: transparent;
+  overscroll-behavior-y: none;
+}
+
+h1,
+h2,
+h3,
+p {
+  margin: 0;
+}
+
+button,
+input,
+select {
+  font: inherit;
+  color: inherit;
+}
+
+a {
+  color: var(--color-link);
+}
+
+ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+/* Números: siempre en monoespaciada, para que las cifras no "salten" al cambiar. */
+.num {
+  font-family: var(--font-mono);
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Etiqueta pequeña estilo "eyebrow": encabezados de sección, columnas de tabla. */
+.label-caps {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+/* ---------------------------------------------------------------------- */
+/* Layout                                                                   */
+/* ---------------------------------------------------------------------- */
+.app-shell {
+  display: flex;
+  flex-direction: column;
+  min-height: 100dvh;
+}
+
+.app-content {
+  flex: 1;
+  overflow-y: auto;
+  padding-top: var(--safe-top);
+  padding-bottom: calc(var(--bottom-nav-height) + var(--safe-bottom) + 16px);
+}
+
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 24px 16px 8px;
+}
+
+.page-header {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.page-header-row {
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.page-header h1 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.page-subtitle {
+  color: var(--color-text-muted);
+  font-size: 0.875rem;
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 4px;
+}
+
+
+/* ---------------------------------------------------------------------- */
+/* Bottom navigation                                                       */
+/* ---------------------------------------------------------------------- */
+.bottom-nav {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  height: calc(var(--bottom-nav-height) + var(--safe-bottom));
+  padding-bottom: var(--safe-bottom);
+  background: var(--color-surface-low);
+  border-top: 1px solid var(--color-border);
+  z-index: 40;
+}
+
+.bottom-nav-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  color: var(--color-text-muted);
+  text-decoration: none;
+  font-size: 0.68rem;
+  font-weight: 500;
+}
+
+.bottom-nav-item svg {
+  width: 20px;
+  height: 20px;
+  padding: 2px;
+  border-radius: var(--radius-full);
+  box-sizing: content-box;
+  transition: background-color 0.15s, color 0.15s;
+}
+
+.bottom-nav-item.active {
+  color: var(--color-text);
+}
+
+.bottom-nav-item.active svg {
+  background: var(--color-navy);
+  color: var(--color-accent-strong);
+}
+
+/* ---------------------------------------------------------------------- */
+/* Tarjetas y contenedores                                                 */
+/* ---------------------------------------------------------------------- */
+.card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+  padding: 16px;
+}
+
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Dos campos lado a lado (ej. Artículos por kilogramo + Costo del artículo),
+   para no gastar tanto alto de pantalla en campos numéricos cortos. */
+.field-row {
+  display: flex;
+  gap: 12px;
+}
+
+.field-row > .field {
+  flex: 1;
+  min-width: 0;
+}
+
+/* Con la mitad del ancho, el espacio reservado para el sufijo (pensado para
+   sufijos largos como "CUP/MXN") deja muy poco lugar para escribir. Los
+   sufijos de esta fila son cortos ("art/kg", "MXN"), así que se angosta. */
+.field-row .input-with-suffix input {
+  padding-right: 52px;
+}
+
+.rates-note {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+  padding: 12px 16px;
+}
+
+.rates-note span {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+.rates-note a {
+  flex-shrink: 0;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.hint {
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+  line-height: 1.5;
+}
+
+/* CalculatorField: botones de operador (solo visibles con el campo enfocado)
+   y la línea "= resultado" que aparece al escribir una operación. */
+.calc-ops {
+  display: flex;
+  gap: 8px;
+}
+
+.calc-op-btn {
+  flex: 1;
+  height: 40px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xs);
+  background: var(--color-surface-high);
+  color: var(--color-accent);
+  font-family: var(--font-mono);
+  font-size: 1.1rem;
+  font-weight: 500;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+.calc-op-btn:active {
+  background: var(--color-accent-soft);
+  border-color: var(--color-accent);
+}
+
+.calc-result {
+  color: var(--color-accent);
+  font-family: var(--font-mono);
+  font-weight: 500;
+}
+
+/* ---------------------------------------------------------------------- */
+/* Campos de formulario                                                    */
+/* ---------------------------------------------------------------------- */
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.field label {
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--color-text-muted);
+}
+
+input[type='text'],
+input[type='number'],
+select {
+  width: 100%;
+  font-family: var(--font-ui);
+  font-size: 16px;
+  padding: 12px;
+  border-radius: var(--radius-xs);
+  border: 1px solid var(--color-border);
+  background: var(--color-surface-high);
+  color: var(--color-text);
+  outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+input[type='number'] {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+input[type='text']:focus,
+input[type='number']:focus,
+select:focus {
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 3px var(--color-accent-soft);
+}
+
+.input-with-suffix {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-with-suffix input {
+  padding-right: 68px;
+}
+
+.input-suffix {
+  position: absolute;
+  right: 12px;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--color-text-muted);
+  pointer-events: none;
+  white-space: nowrap;
+}
+
+/* ---------------------------------------------------------------------- */
+/* Slider (Ganancia por kg)                                                */
+/* ---------------------------------------------------------------------- */
+.slider-input {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 4px;
+  border-radius: var(--radius-full);
+  background: var(--color-surface-high);
+  outline: none;
+  margin: 8px 0 4px;
+}
+
+.slider-input::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--color-accent);
+  border: 3px solid var(--color-surface);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
+  cursor: pointer;
+}
+
+.slider-input::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--color-accent);
+  border: 3px solid var(--color-surface);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
+  cursor: pointer;
+}
+
+.slider-scale {
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--color-text-muted);
+  margin-bottom: 8px;
+}
+
+.manual-entry {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xs);
+  background: var(--color-surface-high);
+  padding: 4px 12px;
+  width: fit-content;
+}
+
+.manual-entry-prefix,
+.manual-entry-suffix {
+  color: var(--color-text-muted);
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+}
+
+.manual-entry input {
+  width: 90px;
+  border: none;
+  padding: 6px 0;
+  background: transparent;
+  font-size: 16px;
+  text-align: right;
+}
+
+.manual-entry input:focus {
+  outline: none;
+}
+
+/* ---------------------------------------------------------------------- */
+/* Botones                                                                  */
+/* ---------------------------------------------------------------------- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: 1.5px solid transparent;
+  border-radius: var(--radius-sm);
+  padding: 12px 20px;
+  font-family: var(--font-ui);
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: filter 0.15s, opacity 0.15s, border-color 0.15s;
+  touch-action: manipulation;
+}
+
+.btn svg {
+  width: 18px;
+  height: 18px;
+}
+
+.btn:active {
+  filter: brightness(0.94);
+}
+
+.btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.btn-primary {
+  background: var(--color-accent);
+  color: var(--color-on-accent);
+}
+
+.btn-secondary {
+  background: transparent;
+  border-color: var(--color-border-strong);
+  color: var(--color-text);
+}
+
+.btn-danger {
+  background: var(--color-danger-soft);
+  color: var(--color-danger);
+}
+
+.btn-block {
+  width: 100%;
+}
+
+.btn-lg {
+  padding: 16px 20px;
+  font-size: 1rem;
+}
+
+.btn-sm {
+  padding: 8px 14px;
+  font-size: 0.8rem;
+}
+
+.icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border: none;
+  border-radius: var(--radius-full);
+  background: transparent;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  transition: background-color 0.15s, color 0.15s;
+}
+
+.icon-btn svg {
+  width: 20px;
+  height: 20px;
+}
+
+.icon-btn:active {
+  background: var(--color-surface-high);
+}
+
+.icon-btn.danger {
+  color: var(--color-danger);
+}
+
+/* ---------------------------------------------------------------------- */
+/* Resultado (Calculadora)                                                 */
+/* ---------------------------------------------------------------------- */
+.result-card {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  background: var(--color-navy);
+  border-color: var(--color-navy-strong);
+}
+
+/* Etiqueta arriba y monto abajo (no lado a lado): así la cifra dispone de todo
+   el ancho de la tarjeta y nunca parte el "CUP" a una segunda línea. */
+.result-row {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  font-size: 0.85rem;
+  color: var(--color-on-navy);
+}
+
+.result-row strong {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  font-size: 1rem;
+  color: var(--color-on-navy-value);
+  white-space: nowrap;
+}
+
+.result-main {
+  padding-top: 12px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.result-main span {
+  font-weight: 600;
+  color: var(--color-on-navy-emphasis);
+}
+
+.result-main strong {
+  /* Escala con el ancho de pantalla: en teléfonos angostos (320–360 px) un precio
+     de 6 dígitos no cabría a 2rem, y como la cifra no puede partirse, se encogería
+     fuera de la tarjeta. */
+  font-size: clamp(1.5rem, 8vw, 2rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--color-accent-strong);
+}
+
+/* ---------------------------------------------------------------------- */
+/* Viajes: lista                                                           */
+/* ---------------------------------------------------------------------- */
+.trip-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.trip-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+  padding: 16px 8px 16px 16px;
+  cursor: pointer;
+  transition: transform 0.15s, border-color 0.15s;
+}
+
+.trip-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--color-border-strong);
+}
+
+.trip-card-main {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.trip-card-main h3 {
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.trip-card-meta {
+  font-size: 0.78rem;
+  color: var(--color-text-muted);
+}
+
+.trip-card-totals {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  margin-top: 4px;
+}
+
+.trip-card-actions {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  flex-shrink: 0;
+  color: var(--color-text-muted);
+}
+
+.trip-card-actions svg:last-child {
+  width: 20px;
+  height: 20px;
+}
+
+/* ---------------------------------------------------------------------- */
+/* Indicador financiero (ganancia / pérdida)                               */
+/* ---------------------------------------------------------------------- */
+.trend {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-family: var(--font-mono);
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+}
+
+.trend svg {
+  width: 13px;
+  height: 13px;
+  flex-shrink: 0;
+}
+
+.trend.positive {
+  color: var(--color-accent);
+}
+
+.trend.negative {
+  color: var(--color-danger);
+}
+
+.trend.neutral {
+  color: var(--color-text-muted);
+}
+
+/* El resumen del viaje (.summary-card) se queda siempre en azul medianoche fijo
+   (ver comentario en :root), así que el trend de Ganancia que vive ahí adentro
+   necesita los colores fijos "on-navy", no los normales (que cambian de tono
+   entre temas y perderían contraste sobre ese fondo que nunca se aclara). */
+.summary-main .trend.positive {
+  color: var(--color-accent-strong);
+}
+
+.summary-main .trend.negative {
+  color: var(--color-on-navy-danger);
+}
+
+.summary-main .trend.neutral {
+  color: var(--color-on-navy-emphasis);
+}
+
+.trend-lg {
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.trend-lg svg {
+  width: 20px;
+  height: 20px;
+}
+
+/* ---------------------------------------------------------------------- */
+/* Detalle de viaje                                                        */
+/* ---------------------------------------------------------------------- */
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-decoration: none;
+  color: var(--color-text-muted);
+}
+
+.back-link svg {
+  width: 16px;
+  height: 16px;
+}
+
+.trip-detail-header {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.trip-detail-header-top {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.trip-title-input {
+  flex: 1;
+  min-width: 0;
+  border: none;
+  background: transparent;
+  padding: 4px 0;
+  font-size: 1.375rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  border-bottom: 1px dashed transparent;
+}
+
+.trip-title-input:focus {
+  outline: none;
+  border-bottom-color: var(--color-accent);
+}
+
+.collapsible-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  border: none;
+  background: transparent;
+  padding: 0;
+  cursor: pointer;
+}
+
+.collapsible-toggle svg {
+  width: 18px;
+  height: 18px;
+  color: var(--color-text-muted);
+  transition: transform 0.18s;
+}
+
+.collapsible-toggle svg.rotated {
+  transform: rotate(180deg);
+}
+
+.rates-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 16px;
+}
+
+/* ---------------------------------------------------------------------- */
+/* Tabla de artículos                                                      */
+/* ---------------------------------------------------------------------- */
+.table-scroll {
+  overflow-x: auto;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  -webkit-overflow-scrolling: touch;
+}
+
+.data-table {
+  border-collapse: collapse;
+  min-width: 760px;
+  width: 100%;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.data-table th,
+.data-table td {
+  padding: 8px 12px;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.data-table th:first-child,
+.data-table td:first-child {
+  text-align: left;
+}
+
+.data-table thead th {
+  color: var(--color-text-muted);
+  font-weight: 500;
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  background: var(--color-surface-low);
+  padding-top: 12px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.data-table tbody tr {
+  cursor: pointer;
+  transition: background-color 0.1s;
+}
+
+.data-table tbody tr:nth-child(even) {
+  background: var(--color-surface-low);
+}
+
+.data-table tbody tr:hover {
+  background: var(--color-surface-high);
+}
+
+.cell-producto {
+  font-family: var(--font-ui);
+  font-weight: 500;
+  color: var(--color-text);
+}
+
+/* ---------------------------------------------------------------------- */
+/* Resumen del viaje                                                       */
+/* ---------------------------------------------------------------------- */
+.summary-card {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background: var(--color-navy);
+  border-color: var(--color-navy-strong);
+}
+
+.summary-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  font-size: 0.85rem;
+  color: var(--color-on-navy);
+}
+
+.summary-row strong {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  color: var(--color-on-navy-value);
+  font-weight: 500;
+}
+
+.summary-main {
+  padding-top: 12px;
+  margin-top: 4px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--color-on-navy-emphasis);
+}
+
+.text-success {
+  color: var(--color-accent);
+}
+
+.text-danger {
+  color: var(--color-danger);
+}
+
+/* ---------------------------------------------------------------------- */
+/* Estado vacío                                                            */
+/* ---------------------------------------------------------------------- */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  text-align: center;
+  padding: 40px 20px;
+  color: var(--color-text-muted);
+}
+
+.empty-state h3 {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.empty-state p {
+  font-size: 0.85rem;
+  max-width: 32ch;
+}
+
+/* ---------------------------------------------------------------------- */
+/* Zona de peligro (Configuración)                                         */
+/* ---------------------------------------------------------------------- */
+.danger-zone {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  border-color: var(--color-danger-container);
+}
+
+.danger-zone h3 {
+  color: var(--color-danger);
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.danger-zone p {
+  font-size: 0.82rem;
+  color: var(--color-text-muted);
+}
+
+.app-version {
+  text-align: center;
+  padding-bottom: 8px;
+}
+
+/* Selector de tema (Configuración) */
+.theme-toggle {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.theme-toggle-btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px;
+  border: 1.5px solid var(--color-border-strong);
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--color-text);
+  font-family: var(--font-ui);
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+.theme-toggle-btn svg {
+  width: 18px;
+  height: 18px;
+}
+
+.theme-toggle-btn.active {
+  background: var(--color-accent);
+  border-color: var(--color-accent);
+  color: var(--color-on-accent);
+}
+
+/* ---------------------------------------------------------------------- */
+/* Modal / hoja inferior                                                   */
+/* ---------------------------------------------------------------------- */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  z-index: 100;
+  animation: fade-in 0.15s ease-out;
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.modal-sheet {
+  width: 100%;
+  max-width: 520px;
+  max-height: min(88dvh, 720px);
+  display: flex;
+  flex-direction: column;
+  background: var(--color-surface-highest);
+  border: 1px solid var(--color-border);
+  border-bottom: none;
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  box-shadow: var(--shadow-modal);
+  animation: slide-up 0.2s ease-out;
+  padding-bottom: var(--safe-bottom);
+}
+
+@media (min-width: 560px) {
+  .modal-overlay {
+    align-items: center;
+  }
+  .modal-sheet {
+    border-radius: var(--radius-lg);
+    border-bottom: 1px solid var(--color-border);
+    max-height: min(85dvh, 680px);
+  }
+}
+
+@keyframes slide-up {
+  from {
+    transform: translateY(24px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 16px 8px 20px;
+  flex-shrink: 0;
+}
+
+.modal-header h2 {
+  font-size: 1.05rem;
+  font-weight: 600;
+}
+
+.modal-body {
+  overflow-y: auto;
+  padding: 8px 20px 20px;
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  padding: 12px 20px;
+  border-top: 1px solid var(--color-border);
+  flex-shrink: 0;
+}
+
+.modal-footer .btn {
+  flex: 1;
+}
+
+.confirm-message {
+  font-size: 0.92rem;
+  line-height: 1.5;
+  color: var(--color-text-muted);
+}
+
+.preview-box {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  background: var(--color-surface-high);
+  border-radius: var(--radius-md);
+  padding: 12px 16px;
+}
+
+.preview-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+}
+
+.preview-row strong {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  color: var(--color-text);
+  font-weight: 500;
+}
+
+.preview-row.highlight strong {
+  color: var(--color-accent);
+  font-size: 1.05rem;
+}
+
+.success-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  text-align: center;
+  padding: 12px 0;
+}
+
+.success-panel p {
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.export-options {
+  display: flex;
+  gap: 8px;
+}
+
+.export-options .btn {
+  flex: 1;
+}
+
+/* Oculta un input (ej. type="file") visualmente sin quitarlo del flujo accesible/del tab. */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}

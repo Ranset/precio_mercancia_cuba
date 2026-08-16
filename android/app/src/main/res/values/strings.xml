@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Precio Cuba</string>
+    <string name="title_activity_main">Precio Cuba</string>
+    <string name="package_name">com.preciocuba.app</string>
+    <string name="custom_url_scheme">com.preciocuba.app</string>
+</resources>
