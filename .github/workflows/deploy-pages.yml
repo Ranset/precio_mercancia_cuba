@@ -1,0 +1,51 @@
+name: Desplegar a GitHub Pages
+
+# Publica la versión web (PWA) en https://<usuario>.github.io/<repositorio>/ en cada push a master.
+# Requiere: Settings → Pages → Source = "GitHub Actions" (ver README, sección "Publicar en GitHub Pages").
+on:
+  push:
+    branches: [master]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Un solo despliegue a la vez; si llega un push nuevo, cancela el anterior que aún no terminó.
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      # Si las pruebas del motor de cálculo (validadas contra el Excel) fallan, no se publica.
+      - run: npm test
+
+      # tsc --noEmit + vite build. `base: './'` en vite.config.ts hace que funcione bajo /<repositorio>/.
+      - run: npm run build
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

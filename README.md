@@ -159,6 +159,21 @@ npm run preview
 
 `dist/` es una PWA completa (manifest + service worker) lista para subir a cualquier hosting estático (Netlify, Vercel, GitHub Pages, un servidor propio, etc.). Una vez publicada, desde Chrome/Safari se puede "Agregar a pantalla de inicio" para instalarla como si fuera una app nativa, en Android, iPhone, Windows o Mac.
 
+### Publicar en GitHub Pages
+
+El workflow [`.github/workflows/deploy-pages.yml`](.github/workflows/deploy-pages.yml) corre las pruebas, compila y publica `dist/` en `https://<usuario>.github.io/<repositorio>/` en cada push a `master` (o a mano desde la pestaña Actions → "Run workflow"). Funciona bajo esa subruta sin configurar nada más porque la app usa rutas relativas (`base: './'`) y `HashRouter`.
+
+Requisitos, una sola vez:
+
+1. **Settings → Pages → Build and deployment → Source: "GitHub Actions"**.
+2. El repositorio debe poder publicar Pages: en el plan gratuito de GitHub eso exige que el repositorio sea **público**; los repositorios privados necesitan un plan de pago (Pro, Team o Enterprise), y aun así el sitio publicado es accesible por cualquiera con la URL.
+
+Notas:
+
+- **Los datos no se comparten entre dispositivos ni orígenes**: lo guardado en la web de Pages (`localStorage` de `<usuario>.github.io`), en la APK y en `localhost` son almacenes separados. Para pasar viajes de uno a otro, usa Configuración → Exportar/Restaurar copia de seguridad.
+- `localStorage` es por origen (`<usuario>.github.io`), no por repositorio: otros sitios de Pages de la misma cuenta comparten ese origen y podrían leer lo guardado.
+- Tras publicar una versión nueva, el service worker (`registerType: 'autoUpdate'`) actualiza la app instalada la siguiente vez que se abre con conexión.
+
 ## Exportar un viaje a PDF o Excel
 
 Desde el detalle de un viaje, el ícono de compartir (junto al nombre del viaje) abre un modal para elegir formato:
