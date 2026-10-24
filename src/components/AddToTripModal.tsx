@@ -14,6 +14,8 @@ interface AddToTripModalProps {
   onClose: () => void;
   calculo: {
     articulosPorKg: number;
+    /** Solo si en la Calculadora se indicó el peso por unidad (kg) en vez de art/kg; ver `TripItem.pesoArticuloKg`. */
+    pesoArticuloKg?: number;
     gananciaKgUSD: number;
     costoArticuloMXN: number;
   };
@@ -83,6 +85,7 @@ export function AddToTripModal({ open, onClose, calculo }: AddToTripModalProps) 
       producto: producto.trim(),
       cantidad,
       articulosPorKg: calculo.articulosPorKg,
+      pesoArticuloKg: calculo.pesoArticuloKg,
       gananciaKgUSD: calculo.gananciaKgUSD,
       costoArticuloMXN: calculo.costoArticuloMXN,
     });

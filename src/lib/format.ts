@@ -1,3 +1,5 @@
+import type { ModoPeso } from '../types';
+
 /**
  * Formateo de números y montos.
  *
@@ -20,6 +22,20 @@ export const fmtMXN = (value: number): string => `$${formatNumber(value)} MXN`;
 export const fmtCUP = (value: number): string => `$${formatNumber(value)} CUP`;
 export const fmtUSD = (value: number): string => `$${formatNumber(value)} USD`;
 export const fmtKg = (value: number): string => `${formatNumber(value)} kg`;
+
+/**
+ * Equivalencia entre las dos formas de indicar el peso, como ayuda bajo el campo:
+ * escribiendo el peso muestra los art/kg que salen, y escribiendo art/kg muestra los kg por artículo.
+ */
+export function fmtEquivalenciaPeso(modo: ModoPeso, articulosPorKg: number): string | undefined {
+  if (!(articulosPorKg > 0) || !isFinite(articulosPorKg)) return undefined;
+  if (modo === 'peso') {
+    return `≈ ${formatNumber(articulosPorKg, articulosPorKg % 1 === 0 ? 0 : 2)} art/kg`;
+  }
+  // Los kg por artículo suelen ser fracciones chicas (0.0119): hasta 4 decimales, sin ceros de relleno.
+  const kgPorArticulo = formatNumber(1 / articulosPorKg, 4).replace(/\.?0+$/, '');
+  return `≈ ${kgPorArticulo} kg por artículo`;
+}
 
 export function formatDate(iso: string): string {
   try {

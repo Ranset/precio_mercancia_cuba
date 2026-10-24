@@ -81,6 +81,8 @@ export interface NewItemInput {
   producto: string;
   cantidad: number;
   articulosPorKg: number;
+  /** Ver `TripItem.pesoArticuloKg`. Al editar, pasar la clave con `undefined` para quitar un peso guardado antes. */
+  pesoArticuloKg?: number;
   gananciaKgUSD: number;
   costoArticuloMXN: number;
 }

@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAppData } from '../state/AppDataContext';
-import { calcPrecioEnCubaCorregido, calcPrecioVentaArticuloCUP } from '../lib/calculations';
-import { fmtCUP, fmtNum } from '../lib/format';
+import type { ModoPeso } from '../types';
+import { calcPrecioEnCubaCorregido, calcPrecioVentaArticuloCUP, resolverPesoArticulo } from '../lib/calculations';
+import { fmtCUP, fmtEquivalenciaPeso, fmtNum } from '../lib/format';
 import {
   GANANCIA_KG_DEFAULT,
   GANANCIA_KG_MANUAL_MAX,
@@ -14,19 +15,25 @@ import { NumberField } from '../components/fields';
 import { CalculatorField } from '../components/CalculatorField';
 import { SliderWithInput } from '../components/SliderWithInput';
 import { AddToTripModal } from '../components/AddToTripModal';
+import { PesoModeSwitch } from '../components/PesoModeSwitch';
 
 export function Home() {
   const { settings } = useAppData();
 
   // `null` = el usuario todavía no escribió nada (el campo muestra su placeholder).
+  // Cada modo recuerda su propio valor, para no perder lo escrito al alternar el switch.
+  const [modoPeso, setModoPeso] = useState<ModoPeso>('articulos');
   const [articulosPorKg, setArticulosPorKg] = useState<number | null>(null);
+  const [pesoArticuloKg, setPesoArticuloKg] = useState<number | null>(null);
   const [gananciaKgUSD, setGananciaKgUSD] = useState(GANANCIA_KG_DEFAULT);
   const [costoArticuloMXN, setCostoArticuloMXN] = useState<number | null>(null);
   const [showAddModal, setShowAddModal] = useState(false);
 
-  const listo = (articulosPorKg ?? 0) > 0 && (costoArticuloMXN ?? 0) > 0;
+  const porPeso = modoPeso === 'peso';
+  const peso = resolverPesoArticulo(modoPeso, articulosPorKg, pesoArticuloKg);
+  const listo = peso.articulosPorKg > 0 && (costoArticuloMXN ?? 0) > 0;
   const calculo = {
-    articulosPorKg: articulosPorKg ?? 0,
+    ...peso,
     gananciaKgUSD,
     costoArticuloMXN: costoArticuloMXN ?? 0,
   };
@@ -48,15 +55,33 @@ export function Home() {
       </div>
 
       <div className="card stack">
+        <PesoModeSwitch value={modoPeso} onChange={setModoPeso} />
+
         <div className="field-row">
-          <CalculatorField
-            label="Artículos por kilogramo"
-            value={articulosPorKg}
-            onChange={setArticulosPorKg}
-            suffix="art/kg"
-            placeholder="Ej. 84"
-            id="articulos-por-kg"
-          />
+          {/* `key` distinto por modo: cada campo arranca con su propio texto al alternar el switch. */}
+          {porPeso ? (
+            <CalculatorField
+              key="peso-articulo"
+              label="Peso de un artículo"
+              value={pesoArticuloKg}
+              onChange={setPesoArticuloKg}
+              suffix="kg"
+              placeholder="Ej. 0.012"
+              hint={fmtEquivalenciaPeso('peso', peso.articulosPorKg)}
+              id="peso-articulo"
+            />
+          ) : (
+            <CalculatorField
+              key="articulos-por-kg"
+              label="Artículos por kilogramo"
+              value={articulosPorKg}
+              onChange={setArticulosPorKg}
+              suffix="art/kg"
+              placeholder="Ej. 84"
+              hint={fmtEquivalenciaPeso('articulos', peso.articulosPorKg)}
+              id="articulos-por-kg"
+            />
+          )}
 
           <NumberField
             label="Costo del artículo"
@@ -94,7 +119,10 @@ export function Home() {
             </div>
           </>
         ) : (
-          <p className="hint">Completa artículos por kilogramo y el costo del artículo para ver el precio.</p>
+          <p className="hint">
+            Completa {porPeso ? 'el peso del artículo' : 'artículos por kilogramo'} y el costo del artículo para ver el
+            precio.
+          </p>
         )}
       </div>
 

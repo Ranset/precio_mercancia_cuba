@@ -1057,6 +1057,42 @@ select:focus {
   color: var(--color-on-accent);
 }
 
+/* Switch de dos opciones dentro de un formulario (PesoModeSwitch): más compacto que el selector de tema. */
+.segmented {
+  display: flex;
+  gap: 4px;
+  padding: 3px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface-high);
+}
+
+.segmented-btn {
+  flex: 1;
+  min-width: 0;
+  padding: 9px 8px;
+  border: 0;
+  border-radius: var(--radius-xs);
+  background: transparent;
+  color: var(--color-text-muted);
+  font-family: var(--font-ui);
+  font-weight: 600;
+  font-size: 0.85rem;
+  cursor: pointer;
+  touch-action: manipulation;
+  transition: background 0.15s, color 0.15s;
+}
+
+.segmented-btn:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 1px;
+}
+
+.segmented-btn.active {
+  background: var(--color-accent);
+  color: var(--color-on-accent);
+}
+
 /* ---------------------------------------------------------------------- */
 /* Modal / hoja inferior                                                   */
 /* ---------------------------------------------------------------------- */

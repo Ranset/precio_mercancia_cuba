@@ -95,7 +95,7 @@ function parseTrip(value: unknown, index: number): Trip {
 
 function parseItem(value: unknown, tripName: string, index: number): TripItem {
   if (!isRecord(value)) throw new Error(`El artículo #${index + 1} del viaje "${tripName}" no es válido.`);
-  const { id, producto, cantidad, articulosPorKg, gananciaKgUSD, costoArticuloMXN } = value;
+  const { id, producto, cantidad, articulosPorKg, gananciaKgUSD, costoArticuloMXN, pesoArticuloKg } = value;
 
   if (typeof id !== 'string' || typeof producto !== 'string') {
     throw new Error(`Un artículo del viaje "${tripName}" tiene campos inválidos.`);
@@ -109,5 +109,12 @@ function parseItem(value: unknown, tripName: string, index: number): TripItem {
     throw new Error(`El artículo "${producto}" del viaje "${tripName}" tiene montos inválidos.`);
   }
 
-  return { id, producto, cantidad, articulosPorKg, gananciaKgUSD, costoArticuloMXN };
+  // Opcional: solo viene si el artículo se cargó indicando el peso por unidad en vez de art/kg.
+  if (pesoArticuloKg === undefined || pesoArticuloKg === null) {
+    return { id, producto, cantidad, articulosPorKg, gananciaKgUSD, costoArticuloMXN };
+  }
+  if (!isFiniteNumber(pesoArticuloKg) || pesoArticuloKg <= 0) {
+    throw new Error(`El artículo "${producto}" del viaje "${tripName}" tiene un peso por unidad inválido.`);
+  }
+  return { id, producto, cantidad, articulosPorKg, gananciaKgUSD, costoArticuloMXN, pesoArticuloKg };
 }

@@ -12,6 +12,9 @@ export interface Rates {
   precioRemesa: number;
 }
 
+/** Cómo indica el usuario el peso de un artículo en los formularios: artículos por kg, o peso de una unidad. */
+export type ModoPeso = 'articulos' | 'peso';
+
 /** Configuración global: valores por defecto para la Calculadora y para viajes nuevos. */
 export type Settings = Rates;
 
@@ -22,6 +25,13 @@ export interface TripItem {
   cantidad: number;
   /** Artículos por kilogramo, usado para prorratear la ganancia de envío. */
   articulosPorKg: number;
+  /**
+   * Peso de UN artículo en kilogramos, solo si el usuario lo escribió directamente en vez de
+   * "artículos por kg". Cuando está presente, los cálculos usan este valor (evita el error de
+   * coma flotante de 1 ÷ kg); `articulosPorKg` se guarda igual (= 1 ÷ pesoArticuloKg) solo
+   * para mostrarlo y exportarlo. Su presencia también indica el modo con que se reabre el formulario.
+   */
+  pesoArticuloKg?: number;
   /** Ganancia deseada por kilogramo de envío, en USD. */
   gananciaKgUSD: number;
   /** Costo de compra de una unidad del artículo, en pesos mexicanos. */

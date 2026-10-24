@@ -1,12 +1,13 @@
 import { useEffect, useState } from 'react';
 import type { FormEvent } from 'react';
-import type { Rates, TripItem } from '../types';
+import type { ModoPeso, Rates, TripItem } from '../types';
 import type { NewItemInput } from '../state/AppDataContext';
-import { calcularItem } from '../lib/calculations';
-import { fmtCUP, fmtKg, fmtMXN, fmtNum } from '../lib/format';
+import { calcularItem, resolverPesoArticulo } from '../lib/calculations';
+import { fmtCUP, fmtEquivalenciaPeso, fmtKg, fmtMXN, fmtNum } from '../lib/format';
 import { GANANCIA_KG_DEFAULT } from '../lib/defaults';
 import { Modal, ConfirmDialog } from './Modal';
 import { NumberField, TextField } from './fields';
+import { PesoModeSwitch } from './PesoModeSwitch';
 
 interface ItemEditSheetProps {
   open: boolean;
@@ -31,6 +32,9 @@ export function ItemEditSheet({ open, onClose, title, initial, rates, onSave, on
   // artículo existente siempre arrancan con su valor real, nunca en null.
   const [cantidad, setCantidad] = useState<number | null>(null);
   const [articulosPorKg, setArticulosPorKg] = useState<number | null>(null);
+  // Modo con que se indica el peso. Cada modo recuerda su propio valor al alternar el switch.
+  const [modoPeso, setModoPeso] = useState<ModoPeso>('articulos');
+  const [pesoArticuloKg, setPesoArticuloKg] = useState<number | null>(null);
   const [gananciaKgUSD, setGananciaKgUSD] = useState(GANANCIA_KG_DEFAULT);
   const [costoArticuloMXN, setCostoArticuloMXN] = useState<number | null>(null);
   const [confirmDelete, setConfirmDelete] = useState(false);
@@ -42,14 +46,19 @@ export function ItemEditSheet({ open, onClose, title, initial, rates, onSave, on
     setProducto(initial?.producto ?? '');
     setCantidad(initial?.cantidad ?? null);
     setArticulosPorKg(initial?.articulosPorKg ?? null);
+    // Un artículo guardado con peso por unidad se reabre en ese mismo modo.
+    setModoPeso(initial?.pesoArticuloKg !== undefined ? 'peso' : 'articulos');
+    setPesoArticuloKg(initial?.pesoArticuloKg ?? null);
     setGananciaKgUSD(initial?.gananciaKgUSD ?? GANANCIA_KG_DEFAULT);
     setCostoArticuloMXN(initial?.costoArticuloMXN ?? null);
     setConfirmDelete(false);
   }, [open, initial]);
 
   const cantidadNum = cantidad ?? 0;
+  const porPeso = modoPeso === 'peso';
+  const peso = resolverPesoArticulo(modoPeso, articulosPorKg, pesoArticuloKg);
   const preview = calcularItem(
-    { cantidad: cantidadNum, articulosPorKg: articulosPorKg ?? 0, gananciaKgUSD, costoArticuloMXN: costoArticuloMXN ?? 0 },
+    { cantidad: cantidadNum, ...peso, gananciaKgUSD, costoArticuloMXN: costoArticuloMXN ?? 0 },
     rates,
   );
   const valido = producto.trim() !== '' && cantidadNum > 0;
@@ -60,7 +69,7 @@ export function ItemEditSheet({ open, onClose, title, initial, rates, onSave, on
     onSave({
       producto: producto.trim(),
       cantidad: cantidadNum,
-      articulosPorKg: articulosPorKg ?? 0,
+      ...peso,
       gananciaKgUSD,
       costoArticuloMXN: costoArticuloMXN ?? 0,
     });
@@ -105,15 +114,32 @@ export function ItemEditSheet({ open, onClose, title, initial, rates, onSave, on
             min={0.01}
             placeholder="Ej. 5"
           />
-          <NumberField
-            label="Artículos por kilogramo"
-            value={articulosPorKg}
-            onChange={setArticulosPorKg}
-            allowEmpty
-            min={0}
-            suffix="art/kg"
-            placeholder="Ej. 84"
-          />
+          <PesoModeSwitch value={modoPeso} onChange={setModoPeso} />
+          {porPeso ? (
+            <NumberField
+              key="peso-articulo"
+              label="Peso de un artículo"
+              value={pesoArticuloKg}
+              onChange={setPesoArticuloKg}
+              allowEmpty
+              min={0}
+              suffix="kg"
+              placeholder="Ej. 0.012"
+              hint={fmtEquivalenciaPeso('peso', peso.articulosPorKg)}
+            />
+          ) : (
+            <NumberField
+              key="articulos-por-kg"
+              label="Artículos por kilogramo"
+              value={articulosPorKg}
+              onChange={setArticulosPorKg}
+              allowEmpty
+              min={0}
+              suffix="art/kg"
+              placeholder="Ej. 84"
+              hint={fmtEquivalenciaPeso('articulos', peso.articulosPorKg)}
+            />
+          )}
           <NumberField
             label="Ganancia por kg de envío"
             value={gananciaKgUSD}

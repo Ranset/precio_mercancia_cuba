@@ -34,6 +34,12 @@ Replica exactamente las fórmulas del Excel original:
 
 El peso no viene del Excel original (se agregó después): si 1 kg trae 2 artículos y se agregan 3 al viaje, esos 3 pesan 3 ÷ 2 = 1.5 kg. Se ve por artículo en la tabla, como total en el resumen del viaje, y en las exportaciones a PDF/Excel.
 
+### Dos formas de indicar el peso
+
+En la Calculadora y en el formulario de artículos de un viaje, un switch deja elegir cómo se indica el peso del artículo: **Artículos por kg** (como en el Excel) o **Peso por artículo** (kilogramos que pesa una unidad, ej. `0.012 kg`). Bajo el campo se ve la equivalencia (`≈ 83.33 art/kg` o `≈ 0.012 kg por artículo`). Cada modo recuerda su propio valor al alternar.
+
+En el segundo modo el artículo guarda `pesoArticuloKg` y los cálculos usan ese peso directamente (ganancia por artículo = `GananciaKg × PesoKg`; peso = `Cantidad × PesoKg`). `articulosPorKg` se guarda igual (`1 ÷ PesoKg`), pero solo para mostrarlo y exportarlo. No se calcula a través de `1 ÷ PesoKg`, y el peso se redondea a 6 decimales (1 mg) antes de multiplicar, porque la coma flotante binaria no representa exacto un decimal como `0.035` y, tras el redondeo a múltiplo de 10, a veces subía el precio 10 CUP de más. Al reabrir un artículo, el formulario vuelve al modo con que se creó.
+
 Ver [`src/lib/calculations.ts`](src/lib/calculations.ts) y sus pruebas en [`src/lib/calculations.test.ts`](src/lib/calculations.test.ts), que reproducen las 19 filas y los totales exactos del Excel original (`npm test`).
 
 ### Tasas: por viaje, no globales
