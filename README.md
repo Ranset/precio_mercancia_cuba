@@ -159,6 +159,22 @@ npm run preview
 
 `dist/` es una PWA completa (manifest + service worker) lista para subir a cualquier hosting estático (Netlify, Vercel, GitHub Pages, un servidor propio, etc.). Una vez publicada, desde Chrome/Safari se puede "Agregar a pantalla de inicio" para instalarla como si fuera una app nativa, en Android, iPhone, Windows o Mac.
 
+## Configirar puerto y permitir dominio
+
+En `package.json`
+```bash
+"scripts": {
+  "dev": "vite --port 5500"
+}
+```
+
+En `vite.config.ts` agregar el dominio, por ejemplo `cmcash.dpdns.org`
+```bash
+server: {
+    allowedHosts: ['cmcash.dpdns.org']
+  },
+```
+
 ### Publicar en GitHub Pages
 
 El workflow [`.github/workflows/deploy-pages.yml`](.github/workflows/deploy-pages.yml) corre las pruebas, compila y publica `dist/` en `https://<usuario>.github.io/<repositorio>/` en cada push a `master` (o a mano desde la pestaña Actions → "Run workflow"). Funciona bajo esa subruta sin configurar nada más porque la app usa rutas relativas (`base: './'`) y `HashRouter`.
